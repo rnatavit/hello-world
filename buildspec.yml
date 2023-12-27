@@ -1,11 +1,17 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      nodejs: 18.x
+    commands:
+      - echo install process started.
+      - npm install --no-audit --loglevel=error
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin 402032371583.dkr.ecr.ap-southeast-1.amazonaws.com
+      - aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 402032371583.dkr.ecr.ap-southeast-1.amazonaws.com
       - REPOSITORY_URI=402032371583.dkr.ecr.ap-southeast-1.amazonaws.com/hello-world
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=${COMMIT_HASH:=latest}
